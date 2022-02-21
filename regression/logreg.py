@@ -107,7 +107,12 @@ class LogisticRegression(BaseRegressor):
         Returns: 
             gradients for given loss function (np.ndarray)
         """
-        pass
+        #loss = make_prediction(X) - y
+        #final_calc = np.dot(loss.T, X)
+        N = X.shape[0]
+        grad = 2/N*X.T.dot(self.make_prediction(X) - y)
+
+        return grad#final_calc
     
     def loss_function(self, X, y) -> float:
         """
@@ -123,7 +128,14 @@ class LogisticRegression(BaseRegressor):
         Returns: 
             average loss 
         """
-        pass
+        y_pred = make_prediction(X)
+        N = X.shape[0]
+
+        loss_score = (1/N)*sum(
+                            [-(yi*np.log(ypi)+(1-yi)*np.log(1-ypi)) 
+                            for yi, ypi in zip(y, y_pred)] 
+                          )
+        return loss_score
     
     def make_prediction(self, X) -> np.array:
         """
@@ -137,8 +149,10 @@ class LogisticRegression(BaseRegressor):
         Returns: 
             y_pred for given X
         """
+        y_pred = 1/(1+np.exp(-(X.dot(W))))
+       # y_pred = (P>.5)*1
 
-        pass
+        return y_pred
 
 
 
