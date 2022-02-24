@@ -35,7 +35,7 @@ def test_updates():
     log_model = logreg.LogisticRegression(num_feats=6, 
                                           max_iter=20000, 
                                           tol=.0001, 
-                                          learning_rate=0.001, 
+                                          learning_rate=0.0001, 
                                           batch_size=200)
 
     log_model.train_model(X_train, y_train, X_val, y_val)

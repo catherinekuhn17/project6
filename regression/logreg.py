@@ -105,7 +105,7 @@ class LogisticRegression(BaseRegressor):
         
     def calculate_gradient(self, X, y) -> np.ndarray:
         """
-        TODO: write function to calculate gradient of the
+        This method clculates the gradient of the
         logistic loss function to update the weights 
 
         Params:
@@ -123,7 +123,7 @@ class LogisticRegression(BaseRegressor):
     
     def loss_function(self, X, y) -> float:
         """
-        TODO: get y_pred from input X and implement binary cross 
+        This method get's y_pred from input X and implement binary cross 
         entropy loss function. Binary cross entropy loss assumes that 
         the classification is either 1 or 0, not continuous, making
         it more suited for (binary) classification.
@@ -138,7 +138,7 @@ class LogisticRegression(BaseRegressor):
         y_pred = self.make_prediction(X) # find the probabilities of y
         N = X.shape[0]
 
-        # calculate the binary cross entropy less
+        # calculate the binary cross entropy loss
         loss_score = (-1/N)*sum(
                             [(yi*np.log(ypi)+(1-yi)*np.log(1-ypi)) 
                             for yi, ypi in zip(y, y_pred)] 
@@ -147,7 +147,7 @@ class LogisticRegression(BaseRegressor):
     
     def make_prediction(self, X) -> np.array:
         """
-        TODO: implement logistic function to get estimates (y_pred) for input
+        This method uses a logistic function to get estimates (y_pred) for input
         X values. The logistic function is a transformation of the linear model W.T(X)+b 
         into an "S-shaped" curve that can be used for binary classification
 
@@ -163,7 +163,7 @@ class LogisticRegression(BaseRegressor):
     
     def get_prediction(self, X) -> np.array:
         '''
-        obtain the predicted values of y
+        This method Obtains the predicted values of y
         
         Params: 
             X (np.ndarray): Set of feature values to make predictions for
