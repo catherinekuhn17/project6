@@ -16,6 +16,11 @@ class BaseRegressor():
         # defining list for storing loss history
         self.loss_history_train = []
         self.loss_history_val = []
+        self.grad = 0
+        self.track_W = []
+        self.curr_x = []
+        self.curr_y = []
+        self.pred = []
         
     def calculate_gradient(self, X, y):
         pass
@@ -48,6 +53,8 @@ class BaseRegressor():
             update_size_epoch = []
             # Iterating through batches (full for loop is one epoch of training)
             for X_train, y_train in zip(X_batch, y_batch):
+                self.curr_x = X_train
+                self.curr_y = y_train
                 # Making prediction on batch
                 y_pred = self.make_prediction(X_train)
                 # Calculating loss
@@ -56,6 +63,7 @@ class BaseRegressor():
                 self.loss_history_train.append(loss_train)
                 # Storing previous weights and bias
                 prev_W = self.W
+                self.track_W.append(prev_W)
                 # Calculating gradient of loss function with respect to each parameter
                 grad = self.calculate_gradient(X_train, y_train)
                 # Updating parameters
@@ -107,12 +115,11 @@ class LogisticRegression(BaseRegressor):
         Returns: 
             gradients for given loss function (np.ndarray)
         """
-        #loss = make_prediction(X) - y
-        #final_calc = np.dot(loss.T, X)
-        N = X.shape[0]
-        grad = 2/N*X.T.dot(self.make_prediction(X) - y)
 
-        return grad#final_calc
+        diff = self.make_prediction(X) - y # difference between predition and y values
+        grad = (np.dot(X.T, diff)) # calculate the gradiant, which will be used to adjust w
+        self.grad = grad
+        return grad
     
     def loss_function(self, X, y) -> float:
         """
@@ -128,11 +135,12 @@ class LogisticRegression(BaseRegressor):
         Returns: 
             average loss 
         """
-        y_pred = make_prediction(X)
+        y_pred = self.make_prediction(X) # find the probabilities of y
         N = X.shape[0]
 
-        loss_score = (1/N)*sum(
-                            [-(yi*np.log(ypi)+(1-yi)*np.log(1-ypi)) 
+        # calculate the binary cross entropy less
+        loss_score = (-1/N)*sum(
+                            [(yi*np.log(ypi)+(1-yi)*np.log(1-ypi)) 
                             for yi, ypi in zip(y, y_pred)] 
                           )
         return loss_score
@@ -149,9 +157,23 @@ class LogisticRegression(BaseRegressor):
         Returns: 
             y_pred for given X
         """
-        y_pred = 1/(1+np.exp(-(X.dot(W))))
-       # y_pred = (P>.5)*1
-
+        y_pred = 1/(1+np.exp(-(X.dot(self.W)))) # uses sigmoid function to place between 0 and 1
+        self.pred = y_pred 
+        return y_pred
+    
+    def get_prediction(self, X) -> np.array:
+        '''
+        obtain the predicted values of y
+        
+        Params: 
+            X (np.ndarray): Set of feature values to make predictions for
+        
+        Returns: 
+            y_pred (np.array): an array of length y, containing 0's and 1's predicted from X
+        '''
+        P = self.make_prediction(X) # uses sigmoid function to place between 0 and 1
+        y_pred = (P>.5)*1 # if prediction is >5, assign as 1. otherwise, assign as 0.
+        
         return y_pred
 
 
